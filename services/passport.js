@@ -21,7 +21,9 @@ passport.use(
     {
       clientID: keys.googleClientID,
       clientSecret: keys.googleClientSecret,
-      callbackURL: '/auth/google/callback'
+      callbackURL: '/auth/google/callback',
+      proxy: true // for handling the proxy or load-balancer trust issue between heroku and google
+      // callbackURL: 'https://pacific-taiga-84708.herokuapp.com/auth/google/callback'
     },
     (accessToken, refreshToken, profile, done) => {
       console.log(profile.id);
