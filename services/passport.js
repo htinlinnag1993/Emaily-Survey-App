@@ -40,7 +40,7 @@ passport.use(
           // creating a new user in the mongoose world without saving it to the database(without persisting it)
           // new User({ googleID: profile.id })
           // creating a new user in the mongoose world & saving/persising it to the database
-          const user = await new User({ googleId: profile.id }).save((err) => {
+          const user = await new User({ googleId: profile.id, displayName: profile.displayName }).save((err) => {
             if(err)
               console.log(err);
           });

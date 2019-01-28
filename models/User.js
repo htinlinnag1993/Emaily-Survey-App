@@ -6,7 +6,8 @@ const { Schema } = mongoose;
 // Creating a schema for mongoose
 const userSchema = new mongoose.Schema({
   googleId: String,
-  credits: { type: Number, default: 0 }
+  credits: { type: Number, default: 0 },
+  displayName: String,
 });
 
 // Telling mongoose to use userSchema modle instance for users collection
