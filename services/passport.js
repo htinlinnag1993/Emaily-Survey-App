@@ -22,30 +22,29 @@ passport.use(
       clientID: keys.googleClientID,
       clientSecret: keys.googleClientSecret,
       callbackURL: '/auth/google/callback',
+      // userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo',
       proxy: true // for handling the proxy or load-balancer trust issue between heroku and google
       // callbackURL: 'https://pacific-taiga-84708.herokuapp.com/auth/google/callback'
     },
-    (accessToken, refreshToken, profile, done) => {
-      console.log(profile.id);
+    async (accessToken, refreshToken, profile, done) => {
       // Find a record with the google id
-      User.findOne({ googleId: profile.id })
-        .then((existingUser) => {
-          if (existingUser) {
-            // we already have a record with the given profile id
-            done(null, existingUser);
-          } else {
-            // we dont have a user record with this ID, make a new record
-            // creating a new user in the mongoose world without saving it to the database(without persisting it)
-            // new User({ googleID: profile.id })
-            // creating a new user in the mongoose world & saving/persising it to the database
-            new User({ googleId: profile.id })
-              .save((err) => {
-                if(!err)
-                  console.log("googleId: " + profile.id);
-              })
-              .then(user => done(null, user));
-          }
+      const existingUser = await User.findOne({ googleId: profile.id });
+
+      if (existingUser) {
+        // we already have a record with the given profile id
+        // return done(null, existingUser); // use it to eliminate else statement(not the case) below
+        done(null, existingUser);
+      } else {
+        // we dont have a user record with this ID, make a new record
+        // creating a new user in the mongoose world without saving it to the database(without persisting it)
+        // new User({ googleID: profile.id })
+        // creating a new user in the mongoose world & saving/persising it to the database
+        const user = await new User({ googleId: profile.id }).save((err) => {
+          if(err)
+            console.log(err);
         });
+        done(null, user);
+      }
     }
   )
 );
