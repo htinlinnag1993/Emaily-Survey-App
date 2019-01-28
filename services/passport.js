@@ -27,23 +27,28 @@ passport.use(
       // callbackURL: 'https://pacific-taiga-84708.herokuapp.com/auth/google/callback'
     },
     async (accessToken, refreshToken, profile, done) => {
-      // Find a record with the google id
-      const existingUser = await User.findOne({ googleId: profile.id });
+      try {
+        // Find a record with the google id
+        const existingUser = await User.findOne({ googleId: profile.id });
 
-      if (existingUser) {
-        // we already have a record with the given profile id
-        // return done(null, existingUser); // use it to eliminate else statement(not the case) below
-        done(null, existingUser);
-      } else {
-        // we dont have a user record with this ID, make a new record
-        // creating a new user in the mongoose world without saving it to the database(without persisting it)
-        // new User({ googleID: profile.id })
-        // creating a new user in the mongoose world & saving/persising it to the database
-        const user = await new User({ googleId: profile.id }).save((err) => {
-          if(err)
-            console.log(err);
-        });
-        done(null, user);
+        if (existingUser) {
+          // we already have a record with the given profile id
+          // return done(null, existingUser); // use it to eliminate else statement(not the case) below
+          done(null, existingUser);
+        } else {
+          // we dont have a user record with this ID, make a new record
+          // creating a new user in the mongoose world without saving it to the database(without persisting it)
+          // new User({ googleID: profile.id })
+          // creating a new user in the mongoose world & saving/persising it to the database
+          const user = await new User({ googleId: profile.id }).save((err) => {
+            if(err)
+              console.log(err);
+          });
+          done(null, user);
+        }
+
+      } catch (error) {
+        console.error(error);
       }
     }
   )
