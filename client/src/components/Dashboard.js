@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import SurveyList from './surveys/SurveyList';
 
 // class-based component
 class Dashboard extends Component {
@@ -11,7 +12,12 @@ class Dashboard extends Component {
       case false:
         return <h1>Dashboard</h1>;
       default:
-        return <h1>Hello, {this.props.auth.displayName}</h1>;
+        return (
+          <div>
+            <h3>Hello, {this.props.auth.displayName}</h3>
+            <SurveyList />
+          </div>
+        );
     }
   }
 
